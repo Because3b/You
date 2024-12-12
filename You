@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>التقاط صورة تلقائيًا</title>
+</head>
+<body>
+    <h1>تم التقاط صورة تلقائيًا!</h1>
+    
+    <video id="video" width="640" height="480" autoplay></video>
+    <canvas id="canvas" style="display:none;"></canvas>
+    
+    <script>
+        // الحصول على عنصر الفيديو والـ canvas
+        const video = document.getElementById('video');
+        const canvas = document.getElementById('canvas');
+        const context = canvas.getContext('2d');
+
+        // طلب الوصول إلى الكاميرا
+        navigator.mediaDevices.getUserMedia({ video: true })
+            .then((stream) => {
+                video.srcObject = stream;
+
+                // بعد بدء تشغيل الفيديو، نلتقط صورة تلقائيًا
+                video.onplaying = () => {
+                    captureImage();
+                };
+            })
+            .catch((err) => {
+                console.log("حدث خطأ في الوصول إلى الكاميرا: ", err);
+            });
+
+        // وظيفة لالتقاط صورة تلقائيًا
+        function captureImage() {
+            // رسم صورة الفيديو على الـ canvas
+            context.drawImage(video, 0, 0, canvas.width, canvas.height);
+            // حفظ الصورة الملتقطة كصورة بيانية
+            const dataUrl = canvas.toDataURL('image/png');
+            console.log("تم التقاط الصورة تلقائيًا: ", dataUrl);
+        }
+    </script>
+</body>
+</html>
